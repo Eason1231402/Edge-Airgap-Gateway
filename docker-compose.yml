@@ -24,6 +24,6 @@ services:
     environment:
       - TZ=Asia/Shanghai
     devices:
-      - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_d8fb66b08015f011b82323f7763d9da9-if00-port0:/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_d8fb66b08015f011b82323f7763d9da9-if00-port0
+      - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_<YOUR_DEVICE_ID>-if00-port0  
     depends_on:
       - mosquitto
