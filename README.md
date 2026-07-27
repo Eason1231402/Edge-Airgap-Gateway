@@ -1,59 +1,92 @@
-  # Edge-Assisted Smart Home Gateway with Hardware-Level Air-Gap
+# Edge-Assisted Smart Home Gateway with Hardware-Level Air-Gap
 
-  > 基于物理熔断机制的边缘计算隔离架构 —— 从专利构想到实物原型与学术验证
+> A Deterministic Physical Isolation Architecture for Edge Computing — From Patent Concept to Hardware Prototype and Academic Validation
 
-  ## 项目背景
+---
 
-  简述"云端语音助手隐私泄露"这一问题的第一性原理分析（1-2段，可参考论文Introduction）。
+## Project Background
 
-  ## 核心成果
+The proliferation of cloud-centric smart home ecosystems has introduced a fundamental privacy contradiction: sensitive acoustic data is continuously streamed to third-party servers for semantic parsing, exposing users to unauthorized eavesdropping, side-channel exfiltration, and service disruption. Conventional mitigations — software-defined firewalls, VLAN-based logical isolation, or even Trusted Execution Environments (TEEs) — remain probabilistic in nature. They share the same underlying silicon and execution environment as the untrusted OS, and are therefore inherently vulnerable to zero-day exploits and side-channel attacks (see paper Section II for a review of TrustZone/SGX side-channel literature).
 
-  - **发明专利**：《一种基于物理熔断机制的智能中控系统及方法》
-  - **申请号**：202610261302.7｜ 状态：实质审查阶段 ｜ 申请人 第一发明人
-  - **学术论文**：*Edge-Assisted Smart Home Gateway with Hardware-Level
-    Air-Gap for Deterministic Privacy*, IEEE GAIIS 2026（第一作者）
-  - **实物原型**：树莓派5 + 双路通信拓扑 + 电磁继电器物理熔断模块
+Applying first-principles reasoning: if the goal is *absolute* privacy rather than *probabilistically low-risk* privacy, isolation must be enforced at the physical layer, not the logical layer. This project explores that idea through a hardware-level air-gap mechanism — physically severing the WAN power domain via a relay/MOSFET, rather than relying on software to "promise" isolation.
 
-  ## 技术演进路线（路线一，主线）
+---
 
-  1. **阶段一**：Qwen2.5 1.5B部署，跑通语音指令解析逻辑
-  2. **问题**：复杂指令响应存在延迟
-  3. **解决**：引入if-else快速响应路径，兼顾灵活性与实时性
-  4. 详见 `software/nlp_pipeline/README.md`
+## Core Achievements
 
-  ## 延伸方向（专利二，非本仓库重点）
+| Item | Detail |
+|---|---|
+| **Patent** | *A Smart Central Control System and Method Based on Physical Fusing Mechanism* — Application No. 202610261302.7, currently under substantive examination. Sole applicant and first inventor. |
+| **Paper** | Y. Chen and M. Zha, *"Edge-Assisted Smart Home Gateway with Hardware-Level Air-Gap for Deterministic Privacy,"* IEEE GAIIS 2026 (first author). |
+| **Prototype** | Dual-path communication topology (Wi-Fi WAN / Zigbee LAN) + electromagnetic relay physical fusing module, running on Raspberry Pi. |
 
-  在完善专利一的过程中，识别到"软件级隔离仍无法应对物理级攻击"的更深层问题，
-  提出了基于热力学熵与纳秒级物理短接的下一代防御思路（专利申请中，尚未实物验证）。
-  详见 `patent/patent2_future_direction.md`。
+---
 
-  ## 商业化探索（路线二三，简述）
+## ⚠️ Hardware Note (Important — Please Read Before Reviewing Data)
 
-  参与北京大学上海临港国际科技创新中心"燕缘·协创者号 AI+ 国际创业大赛 | SynNovator"，尝试将上述架构转型为AI安全插件，
-  线下决赛评审中未获奖项，但在临港管委会数据处的推荐下，获得临港集团'零界魔方'孵化器初步入驻资格并签署意向书。
-  后续在推进商业化落地时，发现现阶段团队资源与市场化能力尚不足以支撑独立运营，主动终止入驻流程，转而聚焦回核心技术研发。
-  该阶段的具体经验与局限见 `docs/route2_exploration.md`。
+The published paper text (Section V-A) describes the edge computing node as a **Raspberry Pi 4B**. This reflects the architecture as designed during the early theoretical validation phase.
 
-  ## 演示视频
+The **actual hardware prototype shown in Fig. 3, and the latency data reported in Fig. 4 (0.002–0.056 ms), were measured on a Raspberry Pi 5**, after the hardware was iterated for higher computational headroom. This discrepancy between the paper text and the actual test hardware is disclosed here for full transparency. The core algorithmic logic (rule-based NLU parsing) and the resulting latency order-of-magnitude are consistent across both Pi 4B and Pi 5.
 
-  - `prototype/demo_video_route1.mp4`：物理熔断触发全过程
+---
 
-  ## 引用 (Citation)
+## Technical Evolution — Route 1 (Main Line → Patent & Paper)
 
-本项目相关研究已发表于 IEEE GAIIS 2026，如引用请使用：
+This route represents the technical path that directly produced the patented architecture and the published paper. **It does not involve any LLM component** — the NLU module is a lightweight, deterministic keyword/rule-matching engine, chosen specifically because it guarantees sub-millisecond, reproducible latency, which an LLM-based approach cannot offer at this hardware scale.
 
-> Y. Chen and M. Zha, "Edge-Assisted Smart Home Gateway with Hardware-Level 
-> Air-Gap for Deterministic Privacy," in Proc. 2026 Int. Conf. Generative 
-> Artificial Intelligence and Information Security (GAIIS), Wuhan, China, 
+1. Hardware-level air-gap mechanism design (relay/MOSFET on WAN power rail).
+2. Dual-path heterogeneous topology (WAN/LAN physical + logical decoupling).
+3. Offline, rule-based NLU pipeline for local device control (lighting, HVAC, scene switching).
+4. Empirical validation on Raspberry Pi 4B (theoretical stage) → Raspberry Pi 5 (final prototype and data collection).
+
+See `software/nlp_pipeline/README.md` for implementation details.
+
+---
+
+## Latency Benchmark — Two Measurement Conditions
+
+This repository provides two separate benchmark scripts, measuring **different things**. Please do not conflate their results:
+
+| Script | What it measures | Environment | Expected order of magnitude |
+|---|---|---|---|
+| `benchmark/jarvis_nlu_pure_benchmark.py` | Pure NLU parsing function only (`ask_jarvis_brain_edge`), single-threaded | Any machine, no GPIO/MQTT/Flask/voice-thread interference | ~0.01 ms (median), matching the paper's reported range under low background noise |
+| `benchmark/benchmark_full_system.py` | Full end-to-end system under real concurrent load | Raspberry Pi, with GPIO + MQTT + Flask + voice-listening threads running | Higher and less stable, reflecting real deployment overhead |
+
+A historical terminal log (see `prototype/log_screenshot_evidence/`) captured during original Pi 5 testing shows per-command NLU latency of 0.050 ms, 0.048 ms, 0.049 ms, and 0.016 ms — consistent with the range reported in the paper (0.002–0.056 ms). These four samples are the only surviving raw evidence from the original test session; the pure-NLU benchmark script above is provided as an independent, larger-sample (n=10,000) reproduction for further verification.
+
+---
+
+## Extension Direction — Patent 2 (Not the Focus of This Repository)
+
+While refining Patent 1, a deeper question was identified: *software-level isolation still cannot fully address physical-layer attacks*. This led to a second patent proposal based on thermodynamic entropy and nanosecond-scale physical short-circuit defense (patent pending, **not yet hardware-validated**).
+
+See `patent/patent2_future_direction.md` for a brief conceptual outline. This is explicitly a forward-looking idea, not a validated result, and is kept separate from the main narrative of this repository.
+
+---
+
+## Commercialization Exploration — Route 2/3 (Brief Summary)
+
+This architecture was submitted to the *"Yanyuan · Co-Creator" AI+ International Startup Competition (SynNovator)*, organized by Peking University Shanghai Lingang International Science and Innovation Center, as a proposed AI security plugin. It did not win an award in the offline finals, but through a referral from the Lingang Administrative Committee's Data Department, obtained preliminary admission eligibility to the "Zero Cube" ("零界魔方") incubator and signed a letter of intent.
+
+During subsequent commercialization efforts, it became clear that current team resources and go-to-market capability were insufficient to independently sustain the venture. The admission process was voluntarily terminated in order to refocus on core technical R&D.
+
+It was during this commercialization phase — separate from the patent/paper architecture above — that a Qwen2.5-1.5B based conversational NLU was experimented with, as part of exploring a more general-purpose AI security assistant concept. This experiment revealed significant latency trade-offs compared to the deterministic rule-based approach used in the patented system, reinforcing the design rationale of Route 1.
+
+See `docs/route2_exploration.md` for details and limitations of this phase.
+
+---
+
+## Demo Video
+
+- `prototype/demo_video_route1.mp4`: Full physical fusing trigger sequence, including terminal-side NLU latency logging.
+
+---
+
+## Citation
+
+If you use this work, please cite:
+
+> Y. Chen and M. Zha, "Edge-Assisted Smart Home Gateway with Hardware-Level
+> Air-Gap for Deterministic Privacy," in Proc. 2026 Int. Conf. Generative
+> Artificial Intelligence and Information Security (GAIIS), Wuhan, China,
 > Mar. 2026, doi: [10.1109/GAIIS69281.2026.11519263](https://doi.org/10.1109/GAIIS69281.2026.11519263).
-
-```bibtex
-@INPROCEEDINGS{chen2026edgeairgap,
-  author={Chen, Yuquan and Zha, Mingming},
-  booktitle={2026 IEEE International Conference on Generative Artificial Intelligence and Information Security (GAIIS)}, 
-  title={Edge-Assisted Smart Home Gateway with Hardware-Level Air-Gap for Deterministic Privacy}, 
-  year={2026},
-  address={Wuhan, China},
-  publisher={IEEE},
-  doi={10.1109/GAIIS69281.2026.11519263}}
-```
