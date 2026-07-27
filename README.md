@@ -38,10 +38,22 @@
 
   - `prototype/demo_video_route1.mp4`：物理熔断触发全过程
 
-  ## 引用
+  ## 引用 (Citation)
 
-  如引用本项目相关论文，请使用：
-  ```
-  Y. Chen and M. Zha, "Edge-Assisted Smart Home Gateway with
-  Hardware-Level Air-Gap for Deterministic Privacy," 2026 IEEE GAIIS.
-  ```
+本项目相关研究已发表于 IEEE GAIIS 2026，如引用请使用：
+
+> Y. Chen and M. Zha, "Edge-Assisted Smart Home Gateway with Hardware-Level 
+> Air-Gap for Deterministic Privacy," in Proc. 2026 Int. Conf. Generative 
+> Artificial Intelligence and Information Security (GAIIS), Wuhan, China, 
+> Mar. 2026, doi: [10.1109/GAIIS69281.2026.11519263](https://doi.org/10.1109/GAIIS69281.2026.11519263).
+
+```bibtex
+@INPROCEEDINGS{chen2026edgeairgap,
+  author={Chen, Yuquan and Zha, Mingming},
+  booktitle={2026 IEEE International Conference on Generative Artificial Intelligence and Information Security (GAIIS)}, 
+  title={Edge-Assisted Smart Home Gateway with Hardware-Level Air-Gap for Deterministic Privacy}, 
+  year={2026},
+  address={Wuhan, China},
+  publisher={IEEE},
+  doi={10.1109/GAIIS69281.2026.11519263}}
+```
