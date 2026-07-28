@@ -16,7 +16,7 @@ ENABLE_VOICE = True
 RELAY_PIN = 17
 MQTT_BROKER = "127.0.0.1"
 MQTT_PORT = 1883
-ZIGBEE_DEVICE_ID = "0xa4c138aef78efe96"
+ZIGBEE_DEVICE_ID = "0xXXXXXXXXXXXXXXXX"  # placeholder — replace with your own Zigbee device ID
 MQTT_TOPIC_SET = f"zigbee2mqtt/{ZIGBEE_DEVICE_ID}/set"
 MODEL_PATH = "models/vosk-model-cn"
 
