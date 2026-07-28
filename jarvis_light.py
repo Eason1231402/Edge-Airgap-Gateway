@@ -5,7 +5,7 @@ import time
 # 配置参数
 BROKER = "127.0.0.1"  # 本地 MQTT 服务器
 PORT = 1883
-DEVICE_ID = "0xa4c138aef78efe96"  # 这是你刚才网页上显示的灯泡专属物理 ID
+ZIGBEE_DEVICE_ID = "0xXXXXXXXXXXXXXXXX"  # placeholder — replace with your own Zigbee device ID
 TOPIC_SET = f"zigbee2mqtt/{DEVICE_ID}/set"
 
 # 初始化 MQTT 客户端
