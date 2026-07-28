@@ -6,7 +6,7 @@ import time
 BROKER = "127.0.0.1"  # 本地 MQTT 服务器
 PORT = 1883
 ZIGBEE_DEVICE_ID = "0xXXXXXXXXXXXXXXXX"  # placeholder — replace with your own Zigbee device ID
-TOPIC_SET = f"zigbee2mqtt/{DEVICE_ID}/set"
+TOPIC_SET = f"zigbee2mqtt/{ZIGBEE_DEVICE_ID}/set"
 
 # 初始化 MQTT 客户端
 client = mqtt.Client()
