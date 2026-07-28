@@ -64,7 +64,7 @@ See `patent/patent2_future_direction.md` for a brief conceptual outline. This is
 
 ---
 
-## Commercialization Exploration — Route 2/3 (Brief Summary)
+## Commercialization Exploration — Route 2 (Brief Summary)
 
 This architecture was submitted to the *"Yanyuan · Co-Creator" AI+ International Startup Competition (SynNovator)*, organized by Peking University Shanghai Lingang International Science and Innovation Center, as a proposed AI security plugin. It did not win an award in the offline finals, but through a referral from the Lingang Administrative Committee's Data Department, obtained preliminary admission eligibility to the "Zero Cube" ("零界魔方") incubator and signed a letter of intent.
 
