@@ -1,4 +1,4 @@
-# Route 2/3 — Commercialization Exploration (Lingang Startup Competition)
+# Route 2 — Commercialization Exploration (Lingang Startup Competition)
 
 ## Background
 
